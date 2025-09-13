@@ -1,6 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
     const typingElement = document.querySelector('.hero .typing');
 
+    // Hero Section Entry Animation
+    const heroElements = document.querySelectorAll('.hero h1, .hero .tagline, .hero .btn');
+    heroElements.forEach((el, index) => {
+        // Start animation after the typing effect begins
+        setTimeout(() => {
+            el.classList.add('visible');
+        }, 500 + index * 200);
+    });
+
     if (typingElement) {
         const words = ["Ayan", "a React Developer", "a Web Developer", "a Coder"];
         let wordIndex = 0;
@@ -92,23 +101,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Animate sections on scroll
-    const sectionsToReveal = document.querySelectorAll('.reveal');
-    if (sectionsToReveal.length > 0) {
-        const revealObserver = new IntersectionObserver((entries, observer) => {
+    // Animate elements on scroll with stagger effect
+    const animatedSections = document.querySelectorAll('.animated-section');
+    if (animatedSections.length > 0) {
+        const sectionObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
+                    const section = entry.target;
+                    const itemsToAnimate = section.querySelectorAll('.anim-item');
+
+                    itemsToAnimate.forEach((item, index) => {
+                        setTimeout(() => {
+                            item.classList.add('visible');
+                        }, index * 150); // Staggered delay for items within the section
+                    });
+
+                    observer.unobserve(section);
                 }
             });
-        }, { 
-            threshold: 0.15 // Trigger when 15% of the element is visible
+        }, {
+            threshold: 0.2, // Trigger when 20% of the section is visible
         });
 
-        sectionsToReveal.forEach(section => {
-            revealObserver.observe(section);
-        });
+        animatedSections.forEach(section => sectionObserver.observe(section));
     }
 
     // Falling Stars Canvas Logic
@@ -130,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 stars.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    radius: Math.random() * 1.5 + 0.5, // Stars of varying sizes
+                    radius: Math.random() * 0.8 + 0.2, // Stars of varying sizes, reduced max size
                     speedX: speed,  // Use the same value for X and Y
                     speedY: speed   // to ensure a consistent 45-degree angle
                 });
@@ -200,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function () {
             cursorOutline.animate({
                 left: `${posX}px`,
                 top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
+            }, { duration: 300, fill: "forwards" });
         });
 
         const interactiveElements = document.querySelectorAll('a, button, .btn, .skill, .project-card, #back-to-top');
